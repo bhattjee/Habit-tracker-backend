@@ -11,21 +11,34 @@ const logger = require('./utils/logger');
 
 const app = express();
 
-// Security middleware
-app.use(helmet());
+
+// ✅ FIX FOR RENDER (VERY IMPORTANT)
+app.set('trust proxy', 1);
+
+
+// ✅ Security middleware
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+
+
+// ✅ Secure CORS (avoid '*' in production)
 app.use(cors({
   origin: process.env.CORS_ORIGIN || '*',
   credentials: true,
 }));
 
-// Body parsing middleware
+
+// ✅ Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Compression middleware
+
+// ✅ Compression middleware
 app.use(compression());
 
-// Logging middleware
+
+// ✅ Logging middleware
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 } else {
@@ -36,13 +49,24 @@ if (process.env.NODE_ENV === 'development') {
   }));
 }
 
-// Rate limiting
+
+// ✅ Rate limiting (now works correctly with proxy)
 app.use('/api', apiLimiter);
 
-// Routes
+
+// ✅ Basic API hardening (extra layer)
+app.use('/api', (req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  next();
+});
+
+
+// ✅ Routes
 app.use('/api', routes);
 
-// Root endpoint
+
+// ✅ Root endpoint
 app.get('/', (req, res) => {
   res.json({
     success: true,
@@ -52,7 +76,8 @@ app.get('/', (req, res) => {
   });
 });
 
-// Error handling
+
+// ✅ Error handling
 app.use(notFound);
 app.use(errorHandler);
 
