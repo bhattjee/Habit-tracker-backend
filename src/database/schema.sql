@@ -215,17 +215,19 @@ CREATE TABLE IF NOT EXISTS goals (
 );
 
 -- Create Indexes for Performance
-CREATE INDEX idx_tasks_user_date ON tasks(user_id, due_date);
-CREATE INDEX idx_tasks_completed ON tasks(user_id, completed);
-CREATE INDEX idx_expenses_user_date ON expenses(user_id, date);
-CREATE INDEX idx_expenses_category ON expenses(user_id, category);
-CREATE INDEX idx_meals_user_date ON meals(user_id, date);
-CREATE INDEX idx_habits_user_active ON habits(user_id, is_active);
-CREATE INDEX idx_habit_logs_habit_date ON habit_logs(habit_id, date);
-CREATE INDEX idx_workouts_user_date ON workouts(user_id, date);
-CREATE INDEX idx_measurements_user_date ON measurements(user_id, date);
-CREATE INDEX idx_journal_user_date ON journal_entries(user_id, date);
-CREATE INDEX idx_goals_user_status ON goals(user_id, status);
+-- Create Indexes for Performance
+CREATE INDEX IF NOT EXISTS idx_tasks_user_date ON tasks(user_id, due_date);
+CREATE INDEX IF NOT EXISTS idx_tasks_completed ON tasks(user_id, completed);
+CREATE INDEX IF NOT EXISTS idx_expenses_user_date ON expenses(user_id, date);
+CREATE INDEX IF NOT EXISTS idx_expenses_category ON expenses(user_id, category);
+CREATE INDEX IF NOT EXISTS idx_meals_user_date ON meals(user_id, date);
+CREATE INDEX IF NOT EXISTS idx_habits_user_active ON habits(user_id, is_active);
+CREATE INDEX IF NOT EXISTS idx_habit_logs_habit_date ON habit_logs(habit_id, date);
+CREATE INDEX IF NOT EXISTS idx_workouts_user_date ON workouts(user_id, date);
+CREATE INDEX IF NOT EXISTS idx_measurements_user_date ON measurements(user_id, date);
+CREATE INDEX IF NOT EXISTS idx_journal_user_date ON journal_entries(user_id, date);
+CREATE INDEX IF NOT EXISTS idx_goals_user_status ON goals(user_id, status);
+
 
 -- Create Updated_At Trigger Function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
